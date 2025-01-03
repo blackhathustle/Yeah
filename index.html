@@ -1,0 +1,517 @@
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+    <link href="css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+        }
+
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .verified-icon {
+            margin-left: 4px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .verified-icon img {
+            width: 14px;
+            height: 14px;
+        }
+
+        .profile-image-container {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            padding: 2px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-image {
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        .fixed-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            z-index: 1000;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .content-padding {
+            padding-top: 40px;
+        }
+
+        .custom-blue {
+            background-color: #1977F2;
+            color: white;
+        }
+
+        .custom-blue-text {
+            color: #1977F2;
+        }
+
+        .btn-text {
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1977F2;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-icon {
+            font-size: 20px;
+        }
+
+        .plus-icon-container {
+            width: 24px;
+            height: 24px;
+            border: 2px solid black;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .plus-icon {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .image-with-line {
+            position: relative;
+        }
+
+        .image-with-line::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2.5px;
+            background-color: black;
+            margin-bottom: 3px;
+        }
+
+        #story-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: none;
+            overflow: hidden;
+        }
+
+        #story-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .follower-image {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .highlight-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .highlight-container {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 2px solid #dbdbdb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            max-width: 90%;
+            width: 300px;
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .popup-header img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .popup-header .verified-icon {
+            width: 12px;
+            height: 12px;
+            margin-left: 5px;
+        }
+
+        .popup-header .ad-label {
+            font-size: 12px;
+            color: #8e8e8e;
+            margin-left: 5px;
+        }
+    </style>
+<script>
+    window.pixelId = "672c2e3200f8bfc2bafde713";
+    var a = document.createElement("script");
+    a.setAttribute("async", "");
+    a.setAttribute("defer", "");
+    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+    document.head.appendChild(a);
+  </script>
+
+<script
+src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+data-utmify-prevent-subids
+async
+defer
+></script>
+</head>
+
+<body class="bg-white">
+    <div id="loading-screen">
+    </div>
+
+    <div id="popup">
+        <div class="popup-header">
+            <img src="images/logo.jpg" alt="Uber logo">
+            <span class="font-bold">adorofarm</span>
+            <img src="https://img.icons8.com/?size=512&amp;id=2sZ0sdlG9kWP&amp;format=png" alt="Verified icon"
+                class="verified-icon">
+            <span class="ad-label">Publicidade</span>
+        </div>
+        <p class="mb-4">Desconto em toda loja com 80% OFF.</p>
+        <p class="text-sm text-gray-600">Aproveite nossa promoção especial de BLACK FRIDAY e renove seus produtos de autocuidado na Farm Rio com descontos incríveis!</p>
+
+        <a href="https://www.farmriio.store/"
+            class="bg-blue-500 text-white px-4 py-2 rounded block text-center">Ir para o site</a>
+    </div>
+
+    <div id="content" class="max-w-md mx-auto bg-white min-h-screen hidden">
+        <header class="fixed-header flex items-center justify-between bg-white">
+            <i class="fas fa-arrow-left text-black text-lg"></i>
+            <h1 class="text-black text-base font-semibold flex items-center">
+                adorofarm
+
+
+                <span class="verified-icon">
+                    <img src="https://img.icons8.com/?size=512&amp;id=2sZ0sdlG9kWP&amp;format=png" alt="Verified icon">
+                </span>
+            </h1>
+            <i class="fas fa-ellipsis-h text-black text-lg"></i>
+        </header>
+
+        <div class="content-padding">
+            <div class="px-4 mt-8">
+                <div class="flex items-center">
+                    <div id="profileImageContainer" class="profile-image-container">
+                        <img id="profileImage" alt="Correios logo with yellow and blue arrows on a green background"
+                            class="profile-image" src="images/logo.jpg">
+                    </div>
+                    <div class="flex-1 ml-8">
+                        <div class="flex justify-between text-center">
+                            <div>
+                                <div class="font-bold">10.346</div>
+                                <div class="text-xs">publicações</div>
+                            </div>
+                            <div>
+                                <div class="font-bold">2,7 mi</div>
+                                <div class="text-xs">seguidores</div>
+                            </div>
+                            <div>
+                                <div class="font-bold">250</div>
+                                <div class="text-xs">seguindo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h2 class="font-bold">FARM Rio</h2>
+                    <p class="text-sm">plantando 1000 árvores por dia, todos os dias 🌳
+
+                        empresa B certificada 🌎
+
+                        100% carbono neutro 🍃
+
+                        desenhado no rio 🇧🇷
+                        
+                        pelo mundo @farmrio ✈️
+                    </p>
+                    <font color="#1977F2">
+                        <p class="text-sm custom-blue-text" style="color: #000000;"></p>
+                    </font>
+                    <a class="custom-blue-text text-sm" href="https://www.farmriio.store/">www.farmrio.com.br</a>
+
+                </div>
+
+                <div class="mt-2 flex items-center">
+                    <img alt="Small profile pictures of followers" class="w-8 h-8 rounded-full" height="30"
+                        src="images/4456129.jpg" width="30">
+                    <p class="text-sm ml-2">Seguido(a) por <strong>anitta, brunamarquezine</strong> e <strong>outras 24
+                            pessoas</strong></p>
+                </div>
+                <div class="flex mt-4 space-x-2">
+                    <button id="followButton"
+                        class="flex-1 custom-blue py-1.5 rounded flex items-center justify-center">
+                        <span id="buttonText" class="btn-text">Seguir</span>
+                        <div class="loading-icon ml-2"></div>
+                        <svg id="downArrow" class="ml-1 hidden" aria-label="Ícone de seta para baixo"
+                            fill="currentColor" height="12" role="img" viewBox="0 0 24 24" width="12">
+                            <title>Ícone de seta para baixo</title>
+                            <path
+                                d="M12 16.502l-7.293-7.296a1 1 0 1 1 1.414-1.414L12 13.67l5.879-5.878a1 1 0 1 1 1.414 1.414L12 16.502z">
+                            </path>
+                        </svg>
+                    </button>
+                    <button id="messageButton" class="flex-1 text-black py-1.5 rounded"
+                        style="background-color: #F3F4F6;">
+                        <span class="btn-text">Mensagem</span>
+                    </button>
+                    <button class="px-2 py-1.5 rounded" style="background-color: #F3F4F6;">
+                        <i class="fas fa-user-plus btn-text"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex p-4 space-x-4 overflow-x-auto">
+                <div class="flex flex-col items-center">
+                    <div class="highlight-container">
+                        <img alt="Warning sign for alert" class="highlight-image" src="images/destaque1.jpg">
+                    </div>
+                    <span class="text-xs mt-1">Green Friday</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="ajudeRSContainer" class="highlight-container">
+                        <img id="ajudeRSImage" alt="Help Rio Grande do Sul campaign" class="highlight-image"
+                            src="images/destaque2.jpg">
+                    </div>
+                    <span class="text-xs mt-1">original FARM</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="ajudeRSContainer" class="highlight-container">
+                        <img id="ajudeRSImage" alt="Help Rio Grande do Sul campaign" class="highlight-image"
+                            src="images/destaque3.jpg">
+                    </div>
+                    <span class="text-xs mt-1">tá na vitrine</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="ajudeRSContainer" class="highlight-container">
+                        <img id="ajudeRSImage" alt="Help Rio Grande do Sul campaign" class="highlight-image"
+                            src="images/destaque4.jpg">
+                    </div>
+                    <span class="text-xs mt-1">Apé</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div id="ajudeRSContainer" class="highlight-container">
+                        <img id="ajudeRSImage" alt="Help Rio Grande do Sul campaign" class="highlight-image"
+                            src="images/destaque5.jpg">
+                    </div>
+                    <span class="text-xs mt-1">alerta golpe</span>
+                </div>
+                
+            </div>
+            <div class="flex justify-around pt-2 mb-2">
+                <img src="images/IMG-7309.jpg" alt="Grid icon" class="w-6 h-6 object-cover">
+                <img src="images/IMG-7305.jpg" alt="Reels icon" class="w-6 h-6 object-cover">
+                <img src="images/IMG-7306.jpg" alt="User icon" class="w-6 h-6 object-cover">
+            </div>
+            <div class="grid grid-cols-3 gap-1 mt-1">
+                <div class="image-with-line">
+                    <img alt="Correios delivery truck on the road" class="w-full aspect-square object-cover"
+                        src="images/post1.jpg">
+                </div>
+                <img alt="Correios employee delivering a package" class="w-full aspect-square object-cover"
+                    src="images/post2.jpg">
+                <img alt="Correios logo on a building" class="w-full aspect-square object-cover" src="images/post3.jpg">
+                <img alt="Correios employee sorting packages" class="w-full aspect-square object-cover"
+                    src="images/post4.jpg">
+                <img alt="Correios delivery van parked on the street" class="w-full aspect-square object-cover"
+                    src="images/post5.jpg">
+                <img alt="Correios employee using a handheld device" class="w-full aspect-square object-cover"
+                    src="images/post6.jpg">
+                <img alt="Correios office with customers" class="w-full aspect-square object-cover"
+                    src="images/post7.jpg">
+                <img alt="Correios package being scanned" class="w-full aspect-square object-cover"
+                    src="images/post8.jpg">
+                <img alt="Correios employee at a counter" class="w-full aspect-square object-cover"
+                    src="images/post9.jpg">
+            </div>
+            <div class="flex flex-col items-center justify-center mt-4 mb-20">
+                <p class="text-gray-500 text-sm mb-2">Carregando publicações antigas</p>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white">
+            <div class="flex justify-around py-4 items-center">
+                <div class="nav-icon">
+                    <img src="images/IMG-7308-2.jpg" alt="Home icon" class="w-6 h-6 object-cover">
+                </div>
+                <div class="nav-icon">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <div class="plus-icon-container">
+                    <span class="plus-icon">+</span>
+                </div>
+                <div class="nav-icon">
+                    <img src="images/IMG-7307.jpg" alt="Reels icon" class="w-6 h-6 object-cover">
+                </div>
+                <div class="nav-icon">
+                    <img alt="Correios logo with yellow and blue arrows on a green background"
+                        class="w-6 h-6 rounded-full" src="images/logo.jpg">
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div id="story-overlay">
+        <iframe id="story-content" src=""></iframe>
+    </div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('content').classList.remove('hidden');
+            document.getElementById('popup').style.display = 'block';
+        }, 3000);
+
+        const followButton = document.getElementById('followButton');
+        const buttonText = document.getElementById('buttonText');
+        const loadingIcon = document.querySelector('.loading-icon');
+        const downArrow = document.getElementById('downArrow');
+
+        followButton.addEventListener('click', function () {
+            buttonText.style.display = 'none';
+            loadingIcon.style.display = 'block';
+
+            setTimeout(function () {
+                loadingIcon.style.display = 'none';
+                buttonText.style.display = 'inline';
+                buttonText.textContent = 'Seguindo';
+                downArrow.classList.remove('hidden');
+
+                followButton.classList.remove('custom-blue');
+                followButton.style.backgroundColor = '#F3F4F6';
+                followButton.classList.add('text-black');
+                downArrow.setAttribute('fill', 'currentColor');
+            }, 2000);
+        });
+
+        const messageButton = document.getElementById('messageButton');
+        messageButton.addEventListener('click', function () {
+            window.location.href = '/chat.html';
+        });
+
+        const profileImage = document.getElementById('profileImage');
+        const profileImageContainer = document.getElementById('profileImageContainer');
+        const storyOverlay = document.getElementById('story-overlay');
+        const storyContent = document.getElementById('story-content');
+
+        let isClicked = false;
+
+        profileImage.addEventListener('click', function () {
+            if (!isClicked) {
+                isClicked = true;
+                profileImageContainer.style.background = '#f0f0f0';
+            }
+
+            storyContent.src = 'story.html';
+            storyOverlay.style.display = 'block';
+
+            setTimeout(() => {
+                storyOverlay.style.display = 'none';
+                storyContent.src = '';
+            }, 15000);
+        });
+    </script>
+
+
+</body>
+
+</html>
